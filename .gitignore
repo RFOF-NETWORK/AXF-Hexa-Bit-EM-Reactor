@@ -47,3 +47,6 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Uploaded assets (screenshots, private files - never push to GitHub)
+attached_assets/
