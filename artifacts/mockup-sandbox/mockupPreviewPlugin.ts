@@ -51,11 +51,35 @@ export function mockupPreviewPlugin(): Plugin {
     }));
   }
 
+  function escapeForGeneratedJsStringLiteral(value: string): string {
+    return value.replace(
+      /[<>\u2028\u2029\/\b\f\n\r\t\0]/g,
+      (char) =>
+        ({
+          "<": "\\u003C",
+          ">": "\\u003E",
+          "/": "\\u002F",
+          "\b": "\\b",
+          "\f": "\\f",
+          "\n": "\\n",
+          "\r": "\\r",
+          "\t": "\\t",
+          "\0": "\\0",
+          "\u2028": "\\u2028",
+          "\u2029": "\\u2029",
+        })[char] ?? char,
+    );
+  }
+
+  function toSafeGeneratedJsStringLiteral(value: string): string {
+    return escapeForGeneratedJsStringLiteral(JSON.stringify(value));
+  }
+
   function generateSource(components: Array<DiscoveredComponent>): string {
     const entries = components
       .map(
         (c) =>
-          `  ${JSON.stringify(c.globKey)}: () => import(${JSON.stringify(c.importPath)})`,
+          `  ${toSafeGeneratedJsStringLiteral(c.globKey)}: () => import(${toSafeGeneratedJsStringLiteral(c.importPath)})`,
       )
       .join(",\n");
 
