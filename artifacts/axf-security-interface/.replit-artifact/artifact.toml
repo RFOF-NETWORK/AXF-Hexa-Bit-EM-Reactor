@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "AXF Security Interface"
+description = "A security dashboard for RFOF-NETWORK. Provides a login/logout interface, user settings (password change, account deletion), and a main security scan view that displays repository status, session reports, and vulnerability tracking across the RFOF-NETWORK ecosystem."
+version = "1.0.0"
+id = "artifacts/axf-security-interface"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23934
+
+[services.development]
+run = "pnpm --filter @workspace/axf-security-interface run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/axf-security-interface", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/axf-security-interface/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23934"
+BASE_PATH = "/"
